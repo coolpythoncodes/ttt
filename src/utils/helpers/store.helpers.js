@@ -1,4 +1,10 @@
 import { views } from "../constants";
+import { loadStdlib } from '@reach-sh/stdlib';
+const reach = loadStdlib('ALGO');
+
+
+const { standardUnit } = reach;
+const defaults = { defaultFundAmt: '10', defaultWager: '3', standardUnit };
 
 export const initialState = {
     view: views.CONNECT_ACCOUNT,
@@ -6,4 +12,6 @@ export const initialState = {
     balance: '',
     contractInfo: '',
     disableButton: false,
+    budget: '',
+    defaults,
 }

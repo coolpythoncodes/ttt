@@ -9,30 +9,7 @@ import { toast } from "react-toastify";
 const reach = loadStdlib('ALGO');
 reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
 
-//Participant Objects
-const commonInteract = {
-    random: () => reach.hasRandom.random(),
-}
 
-const Deployer = {
-    ...commonInteract,
-    getSquareSelected: (state) => {
-        return 5;
-    },
-    getBudget: () => {
-        return reach.parseCurrency(100)
-    },
-    seeOutcome: (outcome) => {
-        console.log(outcome);
-    },
-    endsWith: (state) => {
-        console.log(state);
-    }
-}
-
-const Attacher = {
-    ...commonInteract,
-}
 
 
 
@@ -40,6 +17,33 @@ const StoreContext = createContext()
 
 const StoreContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
+
+
+    //Participant Objects
+    const commonInteract = {
+        random: () => reach.hasRandom.random(),
+    }
+
+    const Deployer = {
+        ...commonInteract,
+        getSquareSelected: (state) => {
+            return 5;
+        },
+        getBudget: () => {
+            return reach.parseCurrency(state.budget)
+        },
+        seeOutcome: (outcome) => {
+            console.log(outcome);
+        },
+        endsWith: (state) => {
+            console.log(state);
+        }
+    }
+
+    const Attacher = {
+        ...commonInteract,
+    }
+
 
     const connect = async () => {
         setState(prev => ({
@@ -69,18 +73,23 @@ const StoreContextProvider = ({ children }) => {
             ...prev,
             disableButton: true,
         }))
-        const ctc = state.account.contract(backend);
-        backend.Alice(ctc, Deployer);
-        setState(prev => ({
-            ...prev,
-            view: views.DEPLOYING,
-        }))
-        const ctcInfo = JSON.stringify(await ctc.getInfo(), null, 2)
-        setState(prev => ({
-            ...prev,
-            contractInfo: ctcInfo,
-            view: views.WAIT_FOR_ATTACHER,
-        }))
+        try {
+            const ctc = state.account.contract(backend);
+            backend.Alice(ctc, Deployer);
+            setState(prev => ({
+                ...prev,
+                view: views.DEPLOYING,
+            }))
+            const ctcInfo = JSON.stringify(await ctc.getInfo(), null, 2)
+            setState(prev => ({
+                ...prev,
+                contractInfo: ctcInfo,
+                view: views.WAIT_FOR_ATTACHER,
+
+            }))
+        } catch (error) {
+            console.log({ error })
+        }
     }
 
     return <StoreContext.Provider value={{

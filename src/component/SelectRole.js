@@ -1,13 +1,17 @@
-import React from 'react'
-import { useStoreContext } from '../context/store'
+import { useStoreContext } from "../context/store"
+import { views } from "../utils"
 
 const SelectRole = () => {
-    const { deploy } = useStoreContext()
+    const {setState} = useStoreContext()
+    const handlePlayerX = () => setState(prev => ({
+        ...prev,
+        view: views.SET_BUDGET
+    }))
     return (
         <div className="deployorattach">
             <p>Please select a player:</p>
             <div className='player-btn'>
-                <button onClick={deploy}>Play as X</button>
+                <button onClick={handlePlayerX}>Play as X</button>
             </div>
             <p> (Set the wager, deploy the contract.)</p>
             <div className='player-btn'>
