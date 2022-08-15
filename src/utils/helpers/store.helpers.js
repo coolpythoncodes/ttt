@@ -13,5 +13,8 @@ export const initialState = {
     contractInfo: '',
     disableButton: false,
     budget: '',
+    player: '',
+    selectedSquare: '',
+    board: [],
     defaults,
 }

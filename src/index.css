@@ -176,16 +176,23 @@ textarea::placeholder {
 }
 
 .square{
-  width: 80px;
+  /* width: 80px; */
   height: 80px;
   border: 1px solid rgb(60,111,255);
   font-size: 18px;
   display: flex;
   justify-content:center;
   align-items:center;
+  cursor: pointer;
 }
 
 .board-row {
   display: flex;
   justify-content:center;
+}
+
+.board-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 300px;
 }

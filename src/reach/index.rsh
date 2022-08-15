@@ -129,7 +129,7 @@ const commonInteract = {
 
 const AInteract = {
   ...commonInteract,
-  getBudget: Fun([], UInt)
+  budget: UInt,
 }
 
 const BInteract = {
@@ -143,7 +143,7 @@ export const main = Reach.App(() => {
   init();
   // The first one to publish deploys the contract
   A.only(() => {
-    const budget = declassify(interact.getBudget());
+    const budget = declassify(interact.budget);
   });
   A.publish(budget)
     .pay(budget);

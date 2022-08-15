@@ -15,17 +15,17 @@ const WaitForAttacher = () => {
         button.disabled = false;
     }
     return (
-        <div className="wager">
-            <p>Waiting for (Player O) to join...</p>
-            <br />
-            <p>Please give them this contract info:</p>
-            <pre className='ContractInfo'>
-                {contractInfo}
-            </pre>
-            <button
-                onClick={(e) => copyToClipboard(e.currentTarget)}
-            >Copy to clipboard</button>
-        </div>
+            <div className="wager">
+                <p>Waiting for (Player O) to join...</p>
+                <br />
+                <p>Please give them this contract info:</p>
+                <pre className='ContractInfo'>
+                    {contractInfo}
+                </pre>
+                <button
+                    onClick={(e) => copyToClipboard(e.currentTarget)}
+                >Copy to clipboard</button>
+            </div>
     )
 }
 

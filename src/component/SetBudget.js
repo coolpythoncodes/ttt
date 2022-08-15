@@ -15,7 +15,7 @@ const SetBudget = () => {
         }
     }
     return (
-        <div >
+        <div>
             <div className=" wager">
                 <input
                     className='amount-input'
