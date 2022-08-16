@@ -1,7 +1,9 @@
 
 const WaitingForTurn = () => {
   return (
-    <div>WaitingForTurn</div>
+    <div className="wager">
+      <p>Waiting for the other player...</p>
+    </div>
   )
 }
 

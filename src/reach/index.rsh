@@ -40,7 +40,7 @@ const col = (b, c) => {
 
 // diagonal starting at the column 0 and row 0
 const diagonalLeft = (b, c) => {
-  if (b[0] == b[4] || b[0] == b[8]) {
+  if (b[0] == b[4] && b[0] == b[8]) {
     return b[0]
   } else {
     return '-'
@@ -49,7 +49,7 @@ const diagonalLeft = (b, c) => {
 
 // diagonal starting at the column 2 and row 0
 const diagonalRight = (b, c) => {
-  if (b[2] == b[4] || b[2] == b[6]) {
+  if (b[2] == b[4] && b[2] == b[6]) {
     return b[2]
   } else {
     return '-'
@@ -66,14 +66,14 @@ const checkWin = (b) => (row(b, 0) == 'x' || row(b, 1) == 'x' || row(b, 2) == 'x
 
 const xWon = (b) => (
   row(b, 0) == 'x' || row(b, 1) == 'x' || row(b, 2) == 'x' ||
-  col(b, 0) == 'x' || col(b, 1) == 'x' || col(b, 2) == 'x' 
-  // diagonalLeft(b, 0) == 'x' || diagonalRight(b, 2) == 'x' 
+  col(b, 0) == 'x' || col(b, 1) == 'x' || col(b, 2) == 'x' ||
+  diagonalLeft(b, 0) == 'x' || diagonalRight(b, 2) == 'x' 
 )
 
 const oWon = (b) => (
   row(b, 0) == 'o' || row(b, 1) == 'o' || row(b, 2) == 'o' ||
-  col(b, 0) == 'o' || col(b, 1) == 'o' || col(b, 2) == 'o' 
-  // diagonalLeft(b, 0) == 'o' || diagonalRight(b, 2) == 'o'
+  col(b, 0) == 'o' || col(b, 1) == 'o' || col(b, 2) == 'o' ||
+  diagonalLeft(b, 0) == 'o' || diagonalRight(b, 2) == 'o'
 )
 
 const calculateWinner = (b) => (xWon(b) ? 0 : oWon(b) ? 1 : 0)
@@ -123,6 +123,7 @@ const hasGameEnd = (state) => (isAllSquaresFilled(state)) || checkWin(state.boar
 const commonInteract = {
   ...hasRandom,
   getSquareSelected: Fun([STATE], UInt),
+  seeBoard: Fun([STATE], Null),
   seeOutcome: Fun([UInt], Null),
   endsWith: Fun([STATE], Null),
 }
@@ -164,8 +165,9 @@ export const main = Reach.App(() => {
         const xMove = getValidSquare(interact, state)
       });
       A.publish(xMove);
-
+      A.interact.seeBoard(applyPlayerMove(state, xMove))
       state = applyPlayerMove(state, xMove);
+      
       continue;
     } else {
       commit()
@@ -175,7 +177,9 @@ export const main = Reach.App(() => {
       });
 
       B.publish(oMove);
+      B.interact.seeBoard(applyPlayerMove(state, oMove))
       state = applyPlayerMove(state, oMove);
+      // B.interact.seeBoard(state)
       continue;
 
     }

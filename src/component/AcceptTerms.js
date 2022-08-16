@@ -12,7 +12,7 @@ const AcceptTerms = () => {
         setState(prev => ({
             ...prev,
             disableButton: false,
-            view: views.BOARD,
+            view: views.WAIT_FOR_TURN,
         }))
     }
     return (

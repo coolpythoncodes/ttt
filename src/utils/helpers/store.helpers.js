@@ -10,6 +10,7 @@ export const initialState = {
     view: views.CONNECT_ACCOUNT,
     account: '',
     balance: '',
+    gameOutcome: '',
     contractInfo: '',
     disableButton: false,
     budget: '',
