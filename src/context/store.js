@@ -120,11 +120,6 @@ const StoreContextProvider = ({ children }) => {
         random: () => reach.hasRandom.random(),
         getSquareSelected,
         chooseSquare,
-    }
-
-    const Deployer = {
-        ...commonInteract,
-        budget: reach.parseCurrency(Number(state.budget)),
         seeOutcome: (outcome) => {
             console.log(OUTCOME[parseInt(outcome)]);
         },
@@ -133,10 +128,14 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const Deployer = {
+        ...commonInteract,
+        budget: reach.parseCurrency(Number(state.budget)),
+    }
+
     const Attacher = {
         ...commonInteract,
         acceptBudget,
-
     }
 
     return <StoreContext.Provider value={{
