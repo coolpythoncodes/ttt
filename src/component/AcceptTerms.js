@@ -12,7 +12,7 @@ const AcceptTerms = () => {
         setState(prev => ({
             ...prev,
             disableButton: false,
-            view: views.CONNECT_ACCOUNT,
+            view: views.BOARD,
         }))
     }
     return (

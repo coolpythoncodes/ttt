@@ -13,6 +13,7 @@ import Layout from './component/Layout';
 import Attacher from './component/Attacher';
 import AcceptTerms from './component/AcceptTerms';
 import Game from './component/game';
+import WaitingForTurn from './component/WaitingForTurn';
 
 
 const App = () => {
@@ -60,8 +61,12 @@ const App = () => {
         }
 
         {
-          view === views.GAME &&
+          view === views.BOARD &&
           <Game/>
+        }
+        {
+          view === views.WAIT_FOR_TURN &&
+          <WaitingForTurn />
         }
         {
           (view === views.DEPLOYING || view === views.ATTACHING) &&

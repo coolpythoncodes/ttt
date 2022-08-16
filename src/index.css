@@ -184,6 +184,15 @@ textarea::placeholder {
   justify-content:center;
   align-items:center;
   cursor: pointer;
+  color: white;
+}
+
+.square-x-color {
+  color: rgb(245, 210, 24);
+}
+
+.square-o-color {
+  color: white;
 }
 
 .board-row {

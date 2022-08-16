@@ -66,14 +66,14 @@ const checkWin = (b) => (row(b, 0) == 'x' || row(b, 1) == 'x' || row(b, 2) == 'x
 
 const xWon = (b) => (
   row(b, 0) == 'x' || row(b, 1) == 'x' || row(b, 2) == 'x' ||
-  col(b, 0) == 'x' || col(b, 1) == 'x' || col(b, 2) == 'x' ||
-  diagonalLeft(b, 0) == 'x' || diagonalRight(b, 2) == 'x' 
+  col(b, 0) == 'x' || col(b, 1) == 'x' || col(b, 2) == 'x' 
+  // diagonalLeft(b, 0) == 'x' || diagonalRight(b, 2) == 'x' 
 )
 
 const oWon = (b) => (
   row(b, 0) == 'o' || row(b, 1) == 'o' || row(b, 2) == 'o' ||
-  col(b, 0) == 'o' || col(b, 1) == 'o' || col(b, 2) == 'o' ||
-  diagonalLeft(b, 0) == 'o' || diagonalRight(b, 2) == 'o'
+  col(b, 0) == 'o' || col(b, 1) == 'o' || col(b, 2) == 'o' 
+  // diagonalLeft(b, 0) == 'o' || diagonalRight(b, 2) == 'o'
 )
 
 const calculateWinner = (b) => (xWon(b) ? 0 : oWon(b) ? 1 : 0)

@@ -13,6 +13,7 @@ const StoreContext = createContext()
 
 const StoreContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
+    const OUTCOME = ['Alice Wins!', 'Bob Wins!',]
 
     const connect = async () => {
         setState(prev => ({
@@ -54,9 +55,15 @@ const StoreContextProvider = ({ children }) => {
 
             }))
         } catch (error) {
-            console.log({ error })
+            console.log("error occurred")
+            setState(prev => ({
+                ...prev,
+                view: views.CONNECT_ACCOUNT,
+            }))
+            console.log(error?.e?.message)
         }
     }
+    
 
     const attach = (contractInfo) => {
         if (!contractInfo) {
@@ -82,10 +89,17 @@ const StoreContextProvider = ({ children }) => {
         })
     }
 
-    const getSquareSelected = (_state) => {// Fun([STATE], UInt)
+    const getSquareSelected = async (_state) => {// Fun([STATE], UInt)
         const _board = _state.board
         while (_board) {
-            const selectedSquare = Number(state.selectedSquare)
+            const selectedSquare = await new Promise(resolveChooseSquareP => {
+                setState(prev => ({
+                    ...prev,
+                    view: views.BOARD,
+                    playable: true,
+                    resolveChooseSquareP,
+                }))
+            })
             const isSquareFilled = _board[selectedSquare].toLowerCase() === 'x' || _board[selectedSquare].toLowerCase() === 'o'
             if (!isSquareFilled) {
                 setState(prev => ({
@@ -99,17 +113,20 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const chooseSquare = (square) => state.resolveChooseSquareP(square)
+
     //Participant Objects
     const commonInteract = {
         random: () => reach.hasRandom.random(),
         getSquareSelected,
+        chooseSquare,
     }
 
     const Deployer = {
         ...commonInteract,
         budget: reach.parseCurrency(Number(state.budget)),
         seeOutcome: (outcome) => {
-            console.log(outcome);
+            console.log(OUTCOME[parseInt(outcome)]);
         },
         endsWith: (state) => {
             console.log(state);
@@ -129,6 +146,7 @@ const StoreContextProvider = ({ children }) => {
         deploy,
         attach,
         acceptBudget,
+        chooseSquare,
         ...state
     }}>{children}</StoreContext.Provider>;
 }
