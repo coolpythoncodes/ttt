@@ -154,13 +154,11 @@ const StoreContextProvider = ({ children }) => {
     const Deployer = {
         ...commonInteract,
         budget: reach.parseCurrency(Number(state.budget)),
-
     }
 
     const Attacher = {
         ...commonInteract,
         acceptBudget,
-
     }
 
     return <StoreContext.Provider value={{
