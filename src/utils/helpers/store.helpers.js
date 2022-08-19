@@ -16,6 +16,5 @@ export const initialState = {
     budget: '',
     player: '',
     selectedSquare: '',
-    board: [],
     defaults,
 }

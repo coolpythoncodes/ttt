@@ -18,76 +18,35 @@ const initialGameState = (player) => ({
   board,
 })
 
-// check winning combo in row
-const row = (b, r) => {
-  const n = r * 3
-  if (b[n] == b[n + 1] && b[n] == b[n + 2]) {
-    return b[n]
-  } else {
-    return '-'
+
+const checkWin = (b) => {
+
+  const [p0, p1, p2, p3, p4, p5, p6, p7, p8] = [...b];
+
+  const row1 = p0 == p1 && p0 == p2 ? p0 : '-'
+  const row2 = p3 == p4 && p3 == p5 ? p3 : '-'
+  const row3 = p6 == p7 && p6 == p8 ? p6 : '-'
+
+  const col1 = p0 == p3 && p0 == p6 ? p0 : '-'
+  const col2 = p1 == p4 && p1 == p7 ? p1 : '-'
+  const col3 = p2 == p5 && p2 == p8 ? p2 : '-'
+
+  const leftDiagonal = p0 == p4 && p0 == p8 ? p0 : '-'
+  const rightDiagonal = p2 == p4 && p2 == p6 ? p2 : '-'
+
+  if (row1 == 'x' || row2 == 'x' || row3 == 'x' || col1 == 'x' || col2 == 'x' || col3 == 'x' || leftDiagonal == 'x' || rightDiagonal == 'x') {
+    return 0
   }
-
-}
-
-// check winning combo in col
-const col = (b, c) => {
-  if (b[c] == b[c + 3] && b[c] == b[c + 6]) {
-    return b[c]
-  } else {
-    return '-'
-  }
-}
-
-// diagonal starting at the column 0 and row 0
-const diagonalLeft = (b, c) => {
-  if (b[0] == b[4] && b[0] == b[8]) {
-    return b[0]
-  } else {
-    return '-'
-  }
-}
-
-// diagonal starting at the column 2 and row 0
-const diagonalRight = (b, c) => {
-  if (b[2] == b[4] && b[2] == b[6]) {
-    return b[2]
-  } else {
-    return '-'
+  else {
+    if (row1 == 'o' || row2 == 'o' || row3 == 'o' || col1 == 'o' || col2 == 'o' || col3 == 'o' || leftDiagonal == 'o' || rightDiagonal == 'o') {
+      return 1
+    } else {
+      return 2
+    }
   }
 }
 
-const checkWin = (b) => (row(b, 0) == 'x' || row(b, 1) == 'x' || row(b, 2) == 'x' ||
-  row(b, 0) == 'o' || row(b, 1) == 'o' || row(b, 2) == 'o' ||
-  col(b, 0) == 'x' || col(b, 1) == 'x' || col(b, 2) == 'x' ||
-  col(b, 0) == 'o' || col(b, 1) == 'o' || col(b, 2) == 'o' ||
-  diagonalLeft(b, 0) == 'x' || diagonalLeft(b, 0) == 'o' ||
-  diagonalRight(b, 2) == 'x' || diagonalRight(b, 2) == 'o'
-)
 
-const xWon = (b) => (
-  row(b, 0) == 'x' || row(b, 1) == 'x' || row(b, 2) == 'x' ||
-  col(b, 0) == 'x' || col(b, 1) == 'x' || col(b, 2) == 'x' ||
-  diagonalLeft(b, 0) == 'x' || diagonalRight(b, 2) == 'x' 
-)
-
-const oWon = (b) => (
-  row(b, 0) == 'o' || row(b, 1) == 'o' || row(b, 2) == 'o' ||
-  col(b, 0) == 'o' || col(b, 1) == 'o' || col(b, 2) == 'o' ||
-  diagonalLeft(b, 0) == 'o' || diagonalRight(b, 2) == 'o'
-)
-
-const calculateWinner = (b) => (xWon(b) ? 0 : oWon(b) ? 1 : 0)
-
-// {
-
-//   if (xWon(b)) {
-//     return 0
-//   }else if (oWon(b)){
-//     return 1
-//   }else {
-//     return 2
-//   }
-// }
 // helper function
 
 // check if the move is not outside the board
@@ -95,7 +54,10 @@ const isMoveInBoard = (move) => (0 <= move && move < SQAURES)
 
 
 // check if the squared has been selected by a player
-const isMoveValid = (state, move) => (!(state.board[move] == "x" || state.board[move] == "o"))
+const isMoveValid = (state, move) => {
+  const p1 = state.board[move];
+  return !(p1 == "x" || p1 == "o")
+}
 
 
 const getValidSquare = (interact, state) => {
@@ -117,8 +79,11 @@ const applyPlayerMove = (state, move) => {
 
 const isAllSquaresFilled = (state) => Array.all(state.board, (square) => (square === 'x' || square === 'o')) // All squares filled
 
+const hasGameEnd = (state) => {
+  const winStatus = checkWin(state.board)
+  return isAllSquaresFilled(state) || winStatus == 1 || winStatus == 0
+}
 
-const hasGameEnd = (state) => (isAllSquaresFilled(state)) || checkWin(state.board)
 
 const commonInteract = {
   ...hasRandom,
@@ -126,6 +91,8 @@ const commonInteract = {
   seeBoard: Fun([STATE], Null),
   seeOutcome: Fun([UInt], Null),
   endsWith: Fun([STATE], Null),
+  informTimeOut: Fun([], Null),
+  deadline: UInt,
 }
 
 const AInteract = {
@@ -142,17 +109,25 @@ export const main = Reach.App(() => {
   const A = Participant('Alice', AInteract);
   const B = Participant('Bob', BInteract);
   init();
+
+
+  const informTimeOut = () => {
+    each([A, B], () => {
+      interact.informTimeOut();
+    });
+  }
   // The first one to publish deploys the contract
   A.only(() => {
     const budget = declassify(interact.budget);
+    const deadline = declassify(interact.deadline);
   });
-  A.publish(budget)
+  A.publish(budget, deadline)
     .pay(budget);
   commit();
 
   // The second one to publish always attaches
   B.interact.acceptBudget(budget);
-  B.pay(budget);
+  B.pay(budget).timeout(relativeTime(deadline), () => closeTo(A, informTimeOut));
   // commit();
 
   var state = initialGameState(true)
@@ -164,10 +139,11 @@ export const main = Reach.App(() => {
       A.only(() => {
         const xMove = getValidSquare(interact, state)
       });
-      A.publish(xMove);
+      A.publish(xMove)
+        .timeout(relativeTime(deadline), () => closeTo(B, informTimeOut));
       A.interact.seeBoard(applyPlayerMove(state, xMove))
       state = applyPlayerMove(state, xMove);
-      
+
       continue;
     } else {
       commit()
@@ -176,7 +152,8 @@ export const main = Reach.App(() => {
         const oMove = getValidSquare(interact, state)
       });
 
-      B.publish(oMove);
+      B.publish(oMove)
+        .timeout(relativeTime(deadline), () => closeTo(A, informTimeOut));
       B.interact.seeBoard(applyPlayerMove(state, oMove))
       state = applyPlayerMove(state, oMove);
       // B.interact.seeBoard(state)
@@ -184,11 +161,15 @@ export const main = Reach.App(() => {
 
     }
   }
-  const outcome = calculateWinner(state.board)
-  // const [toA, toB] = xWon(state.board) ? [2, 0] : oWon(state.board) ? [0, 2] : [1, 1];
-  // transfer(toA * budget).to(A)
-  // transfer(toB * budget).to(B)
-  transfer(balance()).to(A)
+  const outcome = checkWin(state.board)
+  const [toA, toB] = outcome == 0 ? [2, 0] : outcome == 1 ? [0, 2] : [1, 1];
+  // const [toA, toB] = (xWon(state.board))
+  // const [toA, toB] = (xWon(state.board) ? [2, 0] : oWon(state.board) ? [0, 2] : [1, 1])
+
+
+  transfer(toA * budget).to(A)
+  transfer(toB * budget).to(B)
+  // transfer(balance()).to(A)
   commit();
 
   each([A, B], () => {

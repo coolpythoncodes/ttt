@@ -15,6 +15,7 @@ export const views = {
 
     // Players
     BOARD: "board",
-
     WAIT_FOR_TURN: "waiting for turn",
+    TIMEOUT: "timeout",
+    DONE: "done",
 }

@@ -14,6 +14,8 @@ import Attacher from './component/Attacher';
 import AcceptTerms from './component/AcceptTerms';
 import Game from './component/game';
 import WaitingForTurn from './component/WaitingForTurn';
+import Timeout from './component/Timeout';
+import Done from './component/Done';
 
 
 const App = () => {
@@ -56,17 +58,25 @@ const App = () => {
           <Attacher />
         }
         {
-          view === views.ACCEPT_TERMS && 
+          view === views.ACCEPT_TERMS &&
           <AcceptTerms />
         }
 
         {
           view === views.BOARD &&
-          <Game/>
+          <Game />
         }
         {
           view === views.WAIT_FOR_TURN &&
           <WaitingForTurn />
+        }
+        {
+          view === views.TIMEOUT &&
+          <Timeout />
+        }
+        {
+          view === views.DONE &&
+          <Done />
         }
         {
           (view === views.DEPLOYING || view === views.ATTACHING) &&

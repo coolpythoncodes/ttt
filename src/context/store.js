@@ -15,7 +15,7 @@ const StoreContext = createContext()
 
 const StoreContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
-    const OUTCOME = ['Alice Wins!', 'Bob Wins!',]
+    const OUTCOME = ['X Wins!', 'O Wins!', "Draw"]
 
 
     const connect = async () => {
@@ -133,7 +133,8 @@ const StoreContextProvider = ({ children }) => {
         seeOutcome: (outcome) => {
             setState(prev => ({
                 ...prev,
-                gameOutcome: OUTCOME[parseInt(outcome)]
+                gameOutcome: OUTCOME[parseInt(outcome)],
+                view: views.DONE,
             }))
         },
         seeBoard: (state) => {
@@ -143,17 +144,24 @@ const StoreContextProvider = ({ children }) => {
             }))
         },
         endsWith: (state) => {
-            console.log(state.board)
             setState(prev => ({
                 ...prev,
                 board: state.board,
             }))
+        },
+        informTimeout: () => {
+            setState(prev => ({
+                ...prev,
+                view: views.TIMEOUT,
+            }))
         }
+        
     }
 
     const Deployer = {
         ...commonInteract,
         budget: reach.parseCurrency(Number(state.budget)),
+        deadline: {ETH: 10, ALGO: 100, CFX: 1000}[reach.connector],
     }
 
     const Attacher = {

@@ -6,12 +6,14 @@ const SetBudget = () => {
     const { setState, defaults } = useStoreContext()
     const inputRef = useRef(null)
     const handleClick = () => {
-        if (inputRef.current !== null) {
+        if (inputRef.current !== null && inputRef.current.value !== '') {
             setState(prev => ({
                 ...prev,
                 budget: inputRef.current.value,
                 view: views.DEPLOY
             }))
+        }else{
+            alert('Please enter a valid budget')
         }
     }
     return (
