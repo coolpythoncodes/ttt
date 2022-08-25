@@ -8,7 +8,7 @@ const AcceptTerms = () => {
             ...prev,
             disableButton: true
         }))
-        resolveAcceptedP()
+        resolveAcceptedP(true)
         setState(prev => ({
             ...prev,
             disableButton: false,

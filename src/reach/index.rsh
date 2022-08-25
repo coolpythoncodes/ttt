@@ -6,8 +6,12 @@ const BOARD = Array(Bytes(1), SQAURES)
 const STATE = Object({
   playerTurn: Bool,
   board: BOARD,
+  xCost: UInt,
+  oCost: UInt,
 })
+
 const board = Array.replicate(9, " ")
+const squareCostArray = array(UInt, [3000000, 2000000, 3000000, 2000000, 4000000, 2000000, 3000000, 2000000, 3000000])
 
 
 const errIsMoveInBoard = "A square in the board should be selected"
@@ -16,6 +20,8 @@ const errIsMoveValid = "The square has been played by a player already"
 const initialGameState = (player) => ({
   playerTurn: player,
   board,
+  xCost: 0,
+  oCost: 0,
 })
 
 
@@ -60,20 +66,28 @@ const isMoveValid = (state, move) => {
 }
 
 
-const getValidSquare = (interact, state) => {
-  const _move = interact.getSquareSelected(state)
+const getValidSquare = (interact, gameState) => {
+  const _move = interact.getSquareSelected(gameState)
   assume(isMoveInBoard(_move), errIsMoveInBoard)
-  assume(isMoveValid(state, _move), errIsMoveValid)
+  assume(isMoveValid(gameState, _move), errIsMoveValid)
   return declassify(_move)
 }
 
-const applyPlayerMove = (state, move) => {
+const addMoveCost = (prevCost, newCost) => {
+  return prevCost + newCost
+}
+
+
+const applyPlayerMove = (state, move, budget) => {
   require(isMoveInBoard(move), errIsMoveInBoard)
   require(isMoveValid(state, move), errIsMoveValid)
   const player = state.playerTurn
+  const costPerSquare = budget / 16000000
   return {
     playerTurn: !player,
-    board: (player ? state.board.set(move, "x") : state.board.set(move, "o"))
+    board: (player ? state.board.set(move, "x") : state.board.set(move, "o")),
+    xCost: player ? addMoveCost(state.xCost, (squareCostArray[move] * costPerSquare)) : state.xCost,
+    oCost: player ? state.oCost : addMoveCost(state.oCost, (squareCostArray[move] * costPerSquare))
   }
 }
 
@@ -102,7 +116,7 @@ const AInteract = {
 
 const BInteract = {
   ...commonInteract,
-  acceptBudget: Fun([UInt], Null)
+  acceptBudget: Fun([UInt], Bool)
 }
 
 export const main = Reach.App(() => {
@@ -122,54 +136,88 @@ export const main = Reach.App(() => {
     const deadline = declassify(interact.deadline);
   });
   A.publish(budget, deadline)
-    .pay(budget);
+  // .pay(budget);
   commit();
 
   // The second one to publish always attaches
-  B.interact.acceptBudget(budget);
-  B.pay(budget).timeout(relativeTime(deadline), () => closeTo(A, informTimeOut));
-  // commit();
+  // B.interact.acceptBudget(budget);>
+  // B.pay(budget).timeout(relativeTime(deadline), () => closeTo(A, informTimeOut));
+  B.only(() => {
+    const acceptedBudget = declassify(interact.acceptBudget(budget));
+  });
+  B.publish(acceptedBudget);
 
   var state = initialGameState(true)
-  invariant(balance() == (2 * budget))
-  while (!hasGameEnd(state)) {
+
+  invariant(balance() >= 0)
+  while (!hasGameEnd(state) && (state.xCost + state.oCost) <= (2 * budget)) {
     if (state.playerTurn == true) {
       commit()
 
       A.only(() => {
         const xMove = getValidSquare(interact, state)
+        const xMoveCost = squareCostArray[xMove]
       });
-      A.publish(xMove)
+      A.publish(xMove, xMoveCost)
+        .pay(xMoveCost)
         .timeout(relativeTime(deadline), () => closeTo(B, informTimeOut));
-      A.interact.seeBoard(applyPlayerMove(state, xMove))
-      state = applyPlayerMove(state, xMove);
-
+      A.interact.seeBoard(applyPlayerMove(state, xMove, budget))
+      state = applyPlayerMove(state, xMove, budget);
       continue;
     } else {
       commit()
 
       B.only(() => {
         const oMove = getValidSquare(interact, state)
+        const oMoveCost = squareCostArray[oMove]
       });
 
-      B.publish(oMove)
+      B.publish(oMove, oMoveCost)
+        .pay(oMoveCost)
         .timeout(relativeTime(deadline), () => closeTo(A, informTimeOut));
-      B.interact.seeBoard(applyPlayerMove(state, oMove))
-      state = applyPlayerMove(state, oMove);
-      // B.interact.seeBoard(state)
+      B.interact.seeBoard(applyPlayerMove(state, oMove, budget))
+      state = applyPlayerMove(state, oMove, budget);
       continue;
 
     }
   }
   const outcome = checkWin(state.board)
-  const [toA, toB] = outcome == 0 ? [2, 0] : outcome == 1 ? [0, 2] : [1, 1];
-  // const [toA, toB] = (xWon(state.board))
-  // const [toA, toB] = (xWon(state.board) ? [2, 0] : oWon(state.board) ? [0, 2] : [1, 1])
+
+  const payRatio = (gameOutcome) => {
+    if (gameOutcome == 0) { // X (Player A) wins
+      return [1, 0]
+    } else if (gameOutcome == 1) { // 0(Player B) wins
+      return [0, 1];
+    } else {
+      return [1, 1]
+    }
+
+  }
+
+  const aBalance = balance() / 2
+  const bBalance = balance() - aBalance
+
+  const aSettlement = (gameOutcome, to) => {
+    if (gameOutcome == 0 || gameOutcome == 1) {
+      return to * balance()
+    } else {
+      return to * aBalance
+    }
+  }
+
+  const bSettlement = (gameOutcome, to) => {
+    if (gameOutcome == 0 || gameOutcome == 1) {
+      return to * balance()
+    } else {
+      return to * bBalance
+    }
+  }
 
 
-  transfer(toA * budget).to(A)
-  transfer(toB * budget).to(B)
-  // transfer(balance()).to(A)
+  const [toA, toB] = payRatio(outcome);
+  transfer(aSettlement(outcome, toA)).to(A)
+  transfer(bSettlement(outcome, toB)).to(B)
+
   commit();
 
   each([A, B], () => {

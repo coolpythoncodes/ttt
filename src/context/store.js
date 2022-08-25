@@ -1,9 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { initialState, views } from "../utils";
 import * as backend from '../reach/build/index.main.mjs'
 
 
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
+// import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { loadStdlib } from '@reach-sh/stdlib';
 import { toast } from "react-toastify";
 const reach = loadStdlib('ALGO');
@@ -26,12 +26,12 @@ const StoreContextProvider = ({ children }) => {
         try {
             // const account = await reach.getDefaultAccount();
             const account = await reach.newTestAccount(startingBalance)
-            setState(prev => ({
+            setState((prev) => ({
                 ...prev,
                 account,
                 disableButton: false,
                 view: views.DEPLOY_OR_ATTACH,
-            }))
+            }));
 
         } catch (error) {
             toast.error("Could not connect account")
@@ -81,7 +81,7 @@ const StoreContextProvider = ({ children }) => {
         backend.Bob(contract, Attacher)
     }
 
-    const acceptBudget = async (_budget) => {  // Fun([UInt], Null)
+    const acceptBudget = async (_budget) => {  // Fun([UInt], Bool)
         const budgetAmount = reach.formatCurrency(_budget, 4)
         return await new Promise(resolveAcceptedP => {
             setState(prev => ({
@@ -149,25 +149,42 @@ const StoreContextProvider = ({ children }) => {
                 board: state.board,
             }))
         },
-        informTimeout: () => {
+        informTimeOut: () => {
             setState(prev => ({
                 ...prev,
                 view: views.TIMEOUT,
             }))
         }
-        
+
     }
 
+
+    const getBalance = async () => {
+        const balAtomic = await reach.balanceOf(state.account)
+        const balance = reach.formatCurrency(balAtomic, 4)
+        return balance
+
+    }
     const Deployer = {
         ...commonInteract,
         budget: reach.parseCurrency(Number(state.budget)),
-        deadline: {ETH: 10, ALGO: 100, CFX: 1000}[reach.connector],
+        deadline: { ETH: 10, ALGO: 100, CFX: 1000 }[reach.connector],
     }
 
     const Attacher = {
         ...commonInteract,
         acceptBudget,
     }
+
+    useEffect(() => {
+        if (state.account) {
+            getBalance().then(res => setState(prev => ({
+                ...prev,
+                balance: res,
+            })))
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.view])
 
     return <StoreContext.Provider value={{
         state,
@@ -177,6 +194,7 @@ const StoreContextProvider = ({ children }) => {
         attach,
         acceptBudget,
         chooseSquare,
+        getBalance,
         ...state
     }}>{children}</StoreContext.Provider>;
 }

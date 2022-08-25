@@ -11,6 +11,9 @@ const ConnectAccount = () => {
             >
                 Connect account
             </button>
+            <h4>Welcome to Budget Tic-Tac-Toe</h4>
+            <p>The goal is not just to win, but to stay within a budget.</p>
+            <p>Each move comes at a cost equivalent to the number of wins attainable in that space. A draw splits the pot without returning your initial stake.</p>
         </div>
     )
 }

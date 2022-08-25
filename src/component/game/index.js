@@ -2,12 +2,14 @@ import { useStoreContext } from "../../context/store"
 import Square from "./Square"
 
 const Game = () => {
-  const { chooseSquare, board, } = useStoreContext()
+  const { chooseSquare, board, balance, defaults } = useStoreContext()
   const boardArray = [...Array(9).keys()]
 
 
   return (
     <div>
+      <p>balance: {balance} {defaults.standardUnit}</p>
+
       <div className="board-container">
         {
           boardArray.map((x, index) => (
