@@ -15,7 +15,7 @@ const WaitForAttacher = () => {
         button.disabled = false;
     }
     return (
-            <div className="wager">
+            <div className="wager main-con">
                 <p>Waiting for (Player O) to join...</p>
                 <br />
                 <p>Please give them this contract info:</p>

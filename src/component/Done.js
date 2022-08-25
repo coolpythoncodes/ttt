@@ -9,9 +9,9 @@ const Done = () => {
 
 
     return (
-        <div>
-            Thank you for playing. The outcome of this game was:
-            <br />{gameOutcome || 'Unknown'}
+        <div className="main-con">
+            <p>Thank you for playing. The outcome of this game was:</p>
+            <br /><p>{gameOutcome || 'Unknown'}</p>
             <br />
             <p>Your balance is: {balance} {defaults.standardUnit}</p>
             <button onClick={handlePlayAgain}>Play again</button>

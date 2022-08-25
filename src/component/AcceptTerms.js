@@ -25,7 +25,7 @@ const AcceptTerms = () => {
         }
     }
     return (
-        <div className="wager">
+        <div className="wager main-con">
             <p>The terms of the game are:</p>
             <br />
             <p>Budget: {budget} {defaults.standardUnit}</p>

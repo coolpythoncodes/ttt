@@ -24,7 +24,7 @@ const SetBudget = () => {
         }
     }
     return (
-        <div>
+        <div className='main-con'>
             <div className=" wager">
                 <input
                     className='amount-input'
@@ -32,9 +32,9 @@ const SetBudget = () => {
                     placeholder='budget amount'
                     ref={inputRef}
                 />
-                {defaults.standardUnit}
+                <span >{defaults.standardUnit}</span>
             </div>
-            <p>Budget minimum is <b>16 {defaults.standardUnit}</b> </p>
+            <p className="text">Budget minimum is <b>16 {defaults.standardUnit}</b> </p>
             <br />
             <button
                 onClick={handleClick}

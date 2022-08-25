@@ -7,7 +7,7 @@ const Attacher = () => {
     const { attach } = useStoreContext()
 
     return (
-        <div className="wager">
+        <div className="wager main-con">
             <p>Please paste the contract info to attach to:</p>
             <br />
             <textarea spellCheck="false"
