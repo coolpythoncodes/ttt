@@ -23,38 +23,56 @@
 
 > The goal for the players is not just to win, but to stay within a budget. Each move comes at a cost equivalent to the number of wins attainable in that space. A draw splits the pot without returning their initial stake.
 
-## 🖇 How to Start
 
-- open your terminal and go to the folder you want to clone the repo to
-- git clone https://github.com/coolpythoncodes/ttt.git
-- `cd ttt`
-- `npm install` or `yarn install` to install dependencies
-# From the project root path
-
-cd src/reach
-
-# To compile to the latest version of REACH
-
-./reach compile
-
-## Test the Application
-
-Run yarn start to get your development server start.
-
-This opens a new browser with localhost:3000 running.
-
-Open localhost:3000 on separate browsers to test using [MyAlgo](https://wallet.myalgo.com/) Testnet. Fund your ALGO testnet wallet [here](https://bank.testnet.algorand.network/)
-
-Implement your backend changes in src/reach/index.rsh
-
-## 🛠 Tools
+## Built With
 
 - React
-- Reach
+- [Reach](https://reach.sh/)
 - Docker
 
-## Note
-Reach is designed to work on POSIX systems with make, Docker, and Docker Compose installed. Read the [docs](https://docs.reach.sh/quickstart/) to get started
+## Getting Started
+
+To get a local copy up and running follow these simple example steps.
+
+### Prerequisites
+- Running on [Ubuntu](https://ubuntu.com/) on similar OS.
+- Installed [Make](https://linuxhint.com/install-make-ubuntu/).
+- Installed [Docker](https://www.docker.com/) and Docker-Compose. **Use sudo apt command**
+- Given docker command admin rights. [Here](https://docs.docker.com/engine/install/linux-postinstall/).
+- Has a [MyAlgo](https://wallet.myalgo.com/) Wallet
+
+### Install
+```bash
+git clone <this-repo>
+
+npm install
+```
+
+### Usage
+```bash
+#Download Reach in src/reach directory (<this-repo>/src/reach)
+curl https://docs.reach.sh/reach -o reach ; chmod +x reach
+
+#Update Reach and Compile Reach code in src/reach directory (<this-repo>/src/reach)
+./reach update
+./reach compile
+
+#Start the Reach Devnet in the same directory
+./reach devnet
+
+#On Another terminal, in root directroy, get your development server running.
+npm start
+```
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+Feel free to check the [issues page](../../issues/).
+
+## Show your support
+
+Give a ⭐ if you like this project!
 
 [contributors-shield]: https://img.shields.io/github/contributors/coolpythoncodes/ttt?style=for-the-badge
 [contributors-url]: https://github.com/coolpythoncodes/ttt/graphs/contributors
