@@ -43,25 +43,15 @@ To get a local copy up and running follow these simple example steps.
 
 ### Install
 ```bash
-git clone <this-repo>
+git clone https://github.com/coolpythoncodes/ttt.git
+cd ttt
+yarn install
 
-npm install
-```
-
-### Usage
-```bash
-#Download Reach in src/reach directory (<this-repo>/src/reach)
-curl https://docs.reach.sh/reach -o reach ; chmod +x reach
-
-#Update Reach and Compile Reach code in src/reach directory (<this-repo>/src/reach)
-./reach update
-./reach compile
-
-#Start the Reach Devnet in the same directory
+#Start the Reach Devnet in src/reach directory 
 ./reach devnet
 
 #On Another terminal, in root directroy, get your development server running.
-npm start
+yarn start
 ```
 
 ## 🤝 Contributing
