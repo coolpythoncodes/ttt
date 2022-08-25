@@ -8,7 +8,7 @@ const Game = () => {
 
   return (
     <div>
-      <p>balance: {balance} {defaults.standardUnit}</p>
+      <p>Starting balance: {balance} {defaults.standardUnit}</p>
 
       <div className="board-container">
         {

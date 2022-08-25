@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { initialState, views } from "../utils";
 import * as backend from '../reach/build/index.main.mjs'
-
-
-// import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { loadStdlib } from '@reach-sh/stdlib';
 import { toast } from "react-toastify";
 const reach = loadStdlib('ALGO');
+
+
+// import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 // reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
 
 const startingBalance = reach.parseCurrency(100)

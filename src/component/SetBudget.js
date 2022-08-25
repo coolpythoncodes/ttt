@@ -1,18 +1,25 @@
 import React, { useRef } from 'react'
+import { toast } from 'react-toastify'
 import { useStoreContext } from '../context/store'
 import { views } from '../utils'
 
 const SetBudget = () => {
-    const { setState, defaults } = useStoreContext()
+    const { setState, defaults, balance } = useStoreContext()
     const inputRef = useRef(null)
+    console.log(balance)
     const handleClick = () => {
-        if (inputRef.current !== null && inputRef.current.value !== '') {
+        if (balance < Number(inputRef.current.value)) {
+            toast.error("Please you don't have sufficient balance")
+        } else if (inputRef.current.value < 16) {
+            toast.error(`Budget minimum is 16 ${defaults.standardUnit} `)
+        }
+        else if (inputRef.current !== null && inputRef.current.value !== '') {
             setState(prev => ({
                 ...prev,
                 budget: inputRef.current.value,
                 view: views.DEPLOY
             }))
-        }else{
+        } else {
             alert('Please enter a valid budget')
         }
     }
@@ -22,11 +29,12 @@ const SetBudget = () => {
                 <input
                     className='amount-input'
                     type='number'
-                    placeholder='Set a wager'
+                    placeholder='budget amount'
                     ref={inputRef}
                 />
                 {defaults.standardUnit}
             </div>
+            <p>Budget minimum is <b>16 {defaults.standardUnit}</b> </p>
             <br />
             <button
                 onClick={handleClick}

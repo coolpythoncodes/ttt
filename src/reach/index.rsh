@@ -11,7 +11,7 @@ const STATE = Object({
 })
 
 const board = Array.replicate(9, " ")
-const squareCostArray = array(UInt, [3000000, 2000000, 3000000, 2000000, 4000000, 2000000, 3000000, 2000000, 3000000])
+// const squareCostArray = array(UInt, [3000000, 2000000, 3000000, 2000000, 4000000, 2000000, 3000000, 2000000, 3000000])
 
 
 const errIsMoveInBoard = "A square in the board should be selected"
@@ -83,11 +83,13 @@ const applyPlayerMove = (state, move, budget) => {
   require(isMoveValid(state, move), errIsMoveValid)
   const player = state.playerTurn
   const costPerSquare = budget / 16000000
+  const squareCostArray = array(UInt, [3000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare, 2000000 * costPerSquare, 4000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare])
+
   return {
     playerTurn: !player,
     board: (player ? state.board.set(move, "x") : state.board.set(move, "o")),
-    xCost: player ? addMoveCost(state.xCost, (squareCostArray[move] * costPerSquare)) : state.xCost,
-    oCost: player ? state.oCost : addMoveCost(state.oCost, (squareCostArray[move] * costPerSquare))
+    xCost: player ? addMoveCost(state.xCost, squareCostArray[move]) : state.xCost,
+    oCost: player ? state.oCost : addMoveCost(state.oCost, squareCostArray[move])
   }
 }
 
@@ -156,6 +158,8 @@ export const main = Reach.App(() => {
 
       A.only(() => {
         const xMove = getValidSquare(interact, state)
+        const costPerSquare = budget / 16000000
+        const squareCostArray = array(UInt, [3000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare, 2000000 * costPerSquare, 4000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare])
         const xMoveCost = squareCostArray[xMove]
       });
       A.publish(xMove, xMoveCost)
@@ -169,6 +173,8 @@ export const main = Reach.App(() => {
 
       B.only(() => {
         const oMove = getValidSquare(interact, state)
+        const costPerSquare = budget / 16000000
+        const squareCostArray = array(UInt, [3000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare, 2000000 * costPerSquare, 4000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare, 2000000 * costPerSquare, 3000000 * costPerSquare])
         const oMoveCost = squareCostArray[oMove]
       });
 
@@ -227,3 +233,12 @@ export const main = Reach.App(() => {
   // write your program here
   exit();
 });
+
+// const closeToAll = () => {
+//   Anybody.publish();
+//   const wager = balance() / 2
+//   distributePayment(DRAW, wager);
+//   informTimeout();
+//   commit();
+//   exit();
+// }

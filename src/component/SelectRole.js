@@ -20,7 +20,7 @@ const SelectRole = () => {
             <div className='player-btn'>
                 <button onClick={handlePlayerX}>Play as X</button>
             </div>
-            <p> (Set the wager, deploy the contract.)</p>
+            <p> (Set the budget, deploy the contract.)</p>
             <div className='player-btn' onClick={handlePlayerO}>
                 <button>Play as O</button>
             </div>
