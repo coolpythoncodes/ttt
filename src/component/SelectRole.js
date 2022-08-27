@@ -15,7 +15,7 @@ const SelectRole = () => {
         view: views.ATTACH
     }))
     return (
-        <div className="deployorattach">
+        <div className="deployorattach main-con">
             <p>Please select a player:</p>
             <div className='player-btn'>
                 <button onClick={handlePlayerX}>Play as X</button>

@@ -4,14 +4,30 @@ import { useStoreContext } from '../context/store'
 const Layout = ({ children }) => {
     const { player } = useStoreContext()
     return (
-        <div className="deployorattach">
-            {
-                player &&
-                <h2>Player {player}</h2>
-            }
+        // <div className="deployorattach">
+        <div className='App'>
+            <div className='App-Wrapper'>
+                <p className='App-x'>
+                    X
+                </p>
+                <p className='App-o'>
+                    o
+                </p>
+            </div>
+            <header className='App-header'>
 
-            {children}
+                <h1 className='App-title'>
+                    Tic Tac Toe
+                </h1>
+                {
+                    player &&
+                    <h2>Player {player}</h2>
+                }
+
+                {children}
+            </header>
         </div>
+        // </div>
     )
 }
 

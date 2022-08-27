@@ -6615,9 +6615,9 @@ jest@^27.4.3:
     import-local "^3.0.2"
     jest-cli "^27.5.1"
 
-"js-conflux-sdk@git+https://github.com/reach-sh/js-conflux-sdk.git#v1_6_0_blockNumber":
+"js-conflux-sdk@git+https://github.com/reach-sh/js-conflux-sdk#v1_6_0_blockNumber":
   version "1.6.0"
-  resolved "git+https://github.com/reach-sh/js-conflux-sdk.git#6df5f0538c2077a7e29f0be08205b937499a1040"
+  resolved "git+https://github.com/reach-sh/js-conflux-sdk#6df5f0538c2077a7e29f0be08205b937499a1040"
   dependencies:
     "@babel/runtime" "^7.8.4"
     "@conflux-dev/conflux-address-js" "^1.0.0"
