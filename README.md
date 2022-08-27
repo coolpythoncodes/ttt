@@ -47,10 +47,7 @@ git clone https://github.com/coolpythoncodes/ttt.git
 cd ttt
 yarn install
 
-#Start the Reach Devnet in src/reach directory 
-./reach devnet
-
-#On Another terminal, in root directroy, get your development server running.
+#Get your development server running.
 yarn start
 ```
 
