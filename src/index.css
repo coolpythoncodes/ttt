@@ -208,7 +208,7 @@ textarea::placeholder {
   /* width: 80px; */
   height: 80px;
   border: 1px solid rgb(60,111,255);
-  font-size: 18px;
+  font-size: 32px;
   display: flex;
   justify-content:center;
   align-items:center;

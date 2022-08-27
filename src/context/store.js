@@ -1,15 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { initialState, views } from "../utils";
+import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import * as backend from '../reach/build/index.main.mjs'
 import { loadStdlib } from '@reach-sh/stdlib';
 import { toast } from "react-toastify";
 const reach = loadStdlib('ALGO');
 
 
-// import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-// reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
+reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
 
-const startingBalance = reach.parseCurrency(100)
+// const startingBalance = reach.parseCurrency(100)
 
 const StoreContext = createContext()
 
@@ -24,8 +24,8 @@ const StoreContextProvider = ({ children }) => {
             disableButton: true,
         }))
         try {
-            // const account = await reach.getDefaultAccount();
-            const account = await reach.newTestAccount(startingBalance)
+            const account = await reach.getDefaultAccount();
+            // const account = await reach.newTestAccount(startingBalance)
             setState((prev) => ({
                 ...prev,
                 account,
